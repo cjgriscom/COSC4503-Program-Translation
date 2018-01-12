@@ -103,7 +103,7 @@ class Lexer constructor() {
 						buildingType = SINGLEQUOTE
 						BUILDING
 					} else if (/*Opening*/ pairMap.contains(c)) {
-						pushToken(Token(Token.Type.OPEN, c + ""))
+						pushToken(Token(Token.Type.OPEN, c + "", linenum, charnum))
 						nestStack.push(c)
 						WAITING
 					} else if (/*Closing*/ pairChars.contains(c)) {
@@ -116,7 +116,7 @@ class Lexer constructor() {
 							LexErrors.CLOSING_BRACKET.print(this)
 							return false
 						}
-						pushToken(Token(Token.Type.CLOSE, c + ""))
+						pushToken(Token(Token.Type.CLOSE, c + "", linenum, charnum))
 						WAITING
 					} else if (stringChars.contains(c)) {
 						buildingType = PHRASE
@@ -132,19 +132,19 @@ class Lexer constructor() {
 			}
 			BUILDING -> {
 				if (buildingType == PHRASE && whiteSpace.contains(c)) {
-					pushToken(Token(Token.Type.STRING, buffer.toString()))
+					pushToken(Token(Token.Type.STRING, buffer.toString(), linenum, charnum))
 					WAITING
 				} else if (buildingType == OPERATORS && whiteSpace.contains(c)) {
-					pushToken(Token(Token.Type.OPERATORS, buffer.toString()))
+					pushToken(Token(Token.Type.OPERATORS, buffer.toString(), linenum, charnum))
 					WAITING
 				} else if (buildingType == PHRASE && pairChars.contains(c)) {
-					pushToken(Token(Token.Type.STRING, buffer.toString()))
+					pushToken(Token(Token.Type.STRING, buffer.toString(), linenum, charnum))
 					if (c == '"' || c == '\'') {
 						// Illegal
 						LexErrors.QUOTE_LITERAL.print(this)
 						return false
 					} else if (/*Opening*/ pairMap.contains(c)) {
-						pushToken(Token(Token.Type.OPEN, c + ""))
+						pushToken(Token(Token.Type.OPEN, c + "", linenum, charnum))
 						nestStack.push(c)
 						WAITING
 					} else /*Closing*/ {
@@ -157,7 +157,7 @@ class Lexer constructor() {
 							LexErrors.CLOSING_BRACKET.print(this)
 							return false
 						}
-						pushToken(Token(Token.Type.CLOSE, c + ""))
+						pushToken(Token(Token.Type.CLOSE, c + "", linenum, charnum))
 						WAITING
 					}
 				} else {
@@ -167,25 +167,25 @@ class Lexer constructor() {
 							ESCAPECHAR
 						} else if (c == '"' && buildingType == DOUBLEQUOTE) {
 							buffer.append(c)
-							pushToken(Token(Token.Type.STRING, buffer.toString()))
+							pushToken(Token(Token.Type.STRING, buffer.toString(), linenum, charnum))
 							WAITING
 						} else if (c == '\'' && buildingType == SINGLEQUOTE) {
 							buffer.append(c)
-							pushToken(Token(Token.Type.STRING, buffer.toString()))
+							pushToken(Token(Token.Type.STRING, buffer.toString(), linenum, charnum))
 							WAITING
 						} else {
 							BUILDING
 						}
 					} else if (stringChars.contains(c)) {
 						if (buildingType == OPERATORS) {
-							pushToken(Token(Token.Type.OPERATORS, buffer.toString()))
+							pushToken(Token(Token.Type.OPERATORS, buffer.toString(), linenum, charnum))
 							resetBuffer()
 						}
 						buildingType = PHRASE
 						BUILDING
 					} else if (opChars.contains(c)) {
 						if (buildingType == PHRASE) {
-							pushToken(Token(Token.Type.STRING, buffer.toString()))
+							pushToken(Token(Token.Type.STRING, buffer.toString(), linenum, charnum))
 							resetBuffer()
 							buildingType = OPERATORS
 							BUILDING
@@ -215,7 +215,7 @@ class Lexer constructor() {
 						(buffer.startsWith("//") && c == '\n')
 						) {
 					buffer.append(c)
-					pushToken(Token(Token.Type.COMMENT, buffer.toString().trim()))
+					pushToken(Token(Token.Type.COMMENT, buffer.toString().trim(), linenum, charnum))
 					buffer = bufferStack.pop()
 					stateStack.pop()
 				} 
@@ -269,7 +269,7 @@ class Lexer constructor() {
 				var peek = nestStack.peek()
 				var closure = pairMap.get(peek)
 				if (closure != null) this.c = closure // Feed to debug output
-				if (peek == '"' || peek == '"') {
+				if (peek == '"' || peek == '\'') {
 					LexErrors.MISSING_QUOTE.print(this);
 				} else {
 					LexErrors.MISSING_BRACKET.print(this);
