@@ -70,7 +70,7 @@ class Parser {
 						if (!Character.isDigit(c)) return false
 					}
 				} else if (sigToken.data == S_VARIABLE) {
-					if (shiftRegOut.data[0] == '_') return false
+					if (shiftRegOut.data[0] == '_' || Character.isDigit(shiftRegOut.data[0])) return false
 					for (c in shiftRegOut.data) {
 						if (c != '_'
 								&& !Character.isDigit(c)
