@@ -9,7 +9,10 @@ import java.util.Stack
 import java.util.TreeMap
 import java.util.TreeSet
 
-class Lexer constructor() {
+// Lexer using a finite state machine
+//    and taking advantage of Kotlin's
+//    wonderful 'when' assignments
+class Lexer {
 	var stringChars = TreeSet<Char>()
 	init {
 		for (c in 0..128) {
@@ -61,7 +64,7 @@ class Lexer constructor() {
 	var nestStack = Stack<Char>()
 	
 	var charnum = 0
-	var linenum = 0
+	var linenum = 1
 	
 	var c = ' '
 	
@@ -74,8 +77,12 @@ class Lexer constructor() {
 	}
 	
 	fun pushToken(token : Token) {
-		println("Adding token " + token.type + ":" + token.data) // TODO
-		tokens.add(token)
+		if (token.data.isEmpty()) {
+			println("Skipping empty token " + token.type + ":" + token.data) // TODO
+		} else {
+			println("Adding token " + token.type + ":" + token.data) // TODO
+			tokens.add(token)
+		}
 	}
 	
 	fun resetBuffer() {

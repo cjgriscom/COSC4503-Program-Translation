@@ -23,6 +23,5 @@ public enum LexErrors {
 	
 	public void print(Lexer l) {
 		System.err.println(english + "line " + l.getLinenum() + ", character " + l.getCharnum() + ": '" + l.getC() + "'");
-		throw new RuntimeException(); //TODO
 	}
 }

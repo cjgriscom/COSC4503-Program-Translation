@@ -10,5 +10,7 @@ fun main(args: Array<String>) {
 	if (!cmp.valid()) exitProcess(1)
 	cmp.parse()
 	if (!cmp.valid()) exitProcess(1)
+	cmp.translate()
+	if (!cmp.valid()) exitProcess(1)
 	
 }
