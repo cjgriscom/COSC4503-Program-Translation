@@ -1,0 +1,13 @@
+#include<stdio.h>
+#include<string.h>
+
+int main(int argc, char** argv) {
+  int int one;
+  short two;
+  int short;
+  short shorty;
+  int _int;
+  int int7;
+  int intintshortint;
+  int short_int;
+}

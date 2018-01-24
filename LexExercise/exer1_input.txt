@@ -1,0 +1,12 @@
+
+
+Tokens     tokens!!	
+ 				    	 
+ 	
+^^ those are two lines with whitespace included; should not collape
+
+
+
+
+
+^^ this should collapse to        -one-        newline
