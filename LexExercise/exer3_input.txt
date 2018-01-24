@@ -1,0 +1,5 @@
+Lex will match the second rule first, consuming the first two letters, then the first rule. 
+
+However, if something can match either of two rules, order in the lex specification determines which one is used. Some versions of lex may warn you when a rule cannot be matched.
+
+Ubbi Dubbi
