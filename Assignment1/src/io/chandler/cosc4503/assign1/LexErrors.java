@@ -1,6 +1,11 @@
 package io.chandler.cosc4503.assign1;
 
-
+/*
+Chandler Griscom
+Program Translation
+Assignment 1
+Lexer Error Strings
+*/
 public enum LexErrors {
 	
 	NESTING_ERROR("Nesting error at "),

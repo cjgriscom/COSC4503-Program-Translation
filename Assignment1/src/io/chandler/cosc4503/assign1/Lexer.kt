@@ -9,9 +9,12 @@ import java.util.Stack
 import java.util.TreeMap
 import java.util.TreeSet
 
-// Lexer using a finite state machine
-//    and taking advantage of Kotlin's
-//    wonderful 'when' assignments
+/*
+ Chandler Griscom
+ Program Translation
+ Assignment 1
+ Lexer State Machine
+ */
 class Lexer {
 	var debugScan = false
 	var stringChars = TreeSet<Char>()

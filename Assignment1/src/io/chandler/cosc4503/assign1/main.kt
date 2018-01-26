@@ -2,6 +2,12 @@ package io.chandler.cosc4503.assign1
 
 import java.io.File
 
+/*
+ Chandler Griscom
+ Program Translation
+ Assignment 1
+ Lexer Main Method
+ */
 fun main(args: Array<String>) {
 
 	if (args.size != 1) {
