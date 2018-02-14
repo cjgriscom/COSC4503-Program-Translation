@@ -19,8 +19,12 @@ fun main(args: Array<String>) {
 			tokens.add(ParserToken(ParserToken.Type.BEGIN, "", 0, 0))
 			Lexer().lex(xfile, tokens)
 			tokens.add(ParserToken(ParserToken.Type.END, "", tokens.last().linenum + 1, 0))
-			Parser(tokens).parse()
-			
+			var parser = Parser(tokens)
+			if (parser.parse()) {
+				println("Parsing Complete")
+				println("Symbols:")
+				for (s in parser.symbolTable.keys) println(s + ": " + parser.symbolTable.get(s))
+			}
 		} else {
 			System.err.println("File does not exist: " + xfile.absolutePath)
 		}

@@ -1,6 +1,18 @@
 package io.chandler.cosc4503.assign2
 
-import io.chandler.cosc4503.assign2.ParserToken.Type.*
+import io.chandler.cosc4503.assign2.ParserToken.Type.BEGIN
+import io.chandler.cosc4503.assign2.ParserToken.Type.CHAR
+import io.chandler.cosc4503.assign2.ParserToken.Type.COLON
+import io.chandler.cosc4503.assign2.ParserToken.Type.END
+import io.chandler.cosc4503.assign2.ParserToken.Type.EQUAL
+import io.chandler.cosc4503.assign2.ParserToken.Type.ID
+import io.chandler.cosc4503.assign2.ParserToken.Type.L_CURLY
+import io.chandler.cosc4503.assign2.ParserToken.Type.L_PAREN
+import io.chandler.cosc4503.assign2.ParserToken.Type.NUM
+import io.chandler.cosc4503.assign2.ParserToken.Type.R_CURLY
+import io.chandler.cosc4503.assign2.ParserToken.Type.R_PAREN
+import io.chandler.cosc4503.assign2.ParserToken.Type.SEMICOLON
+import java.util.TreeMap
 
 /*
  Chandler Griscom
@@ -9,6 +21,8 @@ import io.chandler.cosc4503.assign2.ParserToken.Type.*
  Recursive Descent Parser
  */
 class Parser constructor(parserTokens : ArrayList<ParserToken>){
+	
+	var symbolTable = TreeMap<String, String>()
 	
 	var iter = parserTokens.iterator()
 	var curToken = iter.next()
@@ -24,7 +38,6 @@ class Parser constructor(parserTokens : ArrayList<ParserToken>){
 			if (iter.hasNext()) {
 				return ParseErrors.INCOMPLETE.throwErr(this)
 			} else {
-				print("Parsing Complete")
 				return true
 			}
 		} else {
@@ -122,8 +135,11 @@ class Parser constructor(parserTokens : ArrayList<ParserToken>){
 	fun VarDeclaration() : Boolean {
 		// VarDeclaration -> Type Id <EQUAL <NUM | QUOTE CHAR QUOTE>>
 		if (!Type()) return false
+		var type = curToken.data
 		advance()
 		if (!isType(ID)) return ParseErrors.EXPECTED.throwWith(ID, this)
+		
+		symbolTable.put(curToken.data, type)
 		return true
 	}
 	
@@ -152,14 +168,18 @@ class Parser constructor(parserTokens : ArrayList<ParserToken>){
 				if (!ExitStmt()) return false
 				advance() // Do postadvance
 			} else {
+				var id = curToken.data
 				advance() // This does postadvance only for ID
 				if (isType(L_PAREN)) {
+					if (!symbolTable.containsKey(id)) symbolTable.put(id, "undeclared method")
 					if (!FunctionCallPartial()) return false
 					advance() // Do postadvance
 				} else if (isType(EQUAL)) {
+					if (!symbolTable.containsKey(id)) symbolTable.put(id, "undeclared variable")
 					if (!AssignStmtPartial()) return false
 					advance() // Do postadvance
 				} else if (allowID) {
+					if (!symbolTable.containsKey(id)) symbolTable.put(id, "undeclared variable")
 					// bueno
 				} else {
 					return ParseErrors.EXPECTED.throwWith("function call or assignment", this)
