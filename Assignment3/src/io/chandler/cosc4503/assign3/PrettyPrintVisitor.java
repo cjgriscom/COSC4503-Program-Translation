@@ -2,21 +2,7 @@ package io.chandler.cosc4503.assign3;
 
 import java.util.ArrayList;
 
-import io.chandler.cosc4503.assign3.tree.AssignStatement;
-import io.chandler.cosc4503.assign3.tree.Block;
-import io.chandler.cosc4503.assign3.tree.BreakStatement;
-import io.chandler.cosc4503.assign3.tree.CaseStatement;
-import io.chandler.cosc4503.assign3.tree.DefaultStatement;
-import io.chandler.cosc4503.assign3.tree.ExitStatement;
-import io.chandler.cosc4503.assign3.tree.FunctionCall;
-import io.chandler.cosc4503.assign3.tree.MainFunction;
-import io.chandler.cosc4503.assign3.tree.Program;
-import io.chandler.cosc4503.assign3.tree.ReturningStatement;
-import io.chandler.cosc4503.assign3.tree.Statement;
-import io.chandler.cosc4503.assign3.tree.SwitchStatement;
-import io.chandler.cosc4503.assign3.tree.Type;
-import io.chandler.cosc4503.assign3.tree.VarDeclaration;
-import io.chandler.cosc4503.assign3.tree.WhileStatement;
+import io.chandler.cosc4503.assign3.tree.*;
 
 public class PrettyPrintVisitor implements Visitor {
 	

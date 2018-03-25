@@ -10,10 +10,10 @@ import java.io.File
  */
 fun main(args: Array<String>) {
 
-	if (args.size != 1) {
-		System.err.println("Expected a single argument containing the name of the input file")
+	if (args.size != 2) {
+		printUsage()
 	} else {
-		var xfile = File(args[0])
+		var xfile = File(args[1])
 		if (xfile.exists()) {
 			var tokens = ArrayList<ParserToken>()
 			tokens.add(ParserToken(ParserToken.Type.BEGIN, "", 0, 0))
@@ -21,14 +21,35 @@ fun main(args: Array<String>) {
 			tokens.add(ParserToken(ParserToken.Type.END, "", tokens.last().linenum + 1, 0))
 			var parser = Parser(tokens)
 			if (parser.parse()) {
-				println("Parsing Complete")
-				println("Symbols:")
-				for (s in parser.symbolTable.keys) println(s + ": " + parser.symbolTable.get(s))
-				println("Pretty print:")
-				PrettyPrintVisitor(parser.program)
+				when(args[0].toLowerCase()) {
+					"getsymbols" -> {
+						println("Symbols:")
+						for (s in parser.symbolTable.keys) println(s + ": " + parser.symbolTable.get(s))
+					}
+					"prettyprint" -> {
+						PrettyPrintVisitor(parser.program)
+					}
+					"postfix" -> {
+						PostfixVisitor(parser.program)
+					}
+					else -> {
+						System.err.println("Unknown command: " + args[0])
+						printUsage()
+					}
+				}
+				
 			}
 		} else {
 			System.err.println("File does not exist: " + xfile.absolutePath)
+			printUsage()
 		}
 	}
+}
+
+fun printUsage() {
+	System.err.println("Usage: (application) (command) (inputfile)")
+	System.err.println("  Commands:")
+	System.err.println("    getSymbols")
+	System.err.println("    prettyPrint")
+	System.err.println("    postfix")
 }

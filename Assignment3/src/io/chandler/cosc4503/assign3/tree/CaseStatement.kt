@@ -24,6 +24,7 @@ class CaseStatement // TODO postadvance
 		parser.advance()
 		if (parser.isType(ID)) {
 			id = parser.curToken.data
+			if (!parser.symbolTable.containsKey(id!!)) parser.symbolTable.put(id!!, "undeclared variable")
 			parser.advance()
 		} else if (parser.isType(NUM) || parser.isType(CHAR)) {
 			literal = parser.curToken.data

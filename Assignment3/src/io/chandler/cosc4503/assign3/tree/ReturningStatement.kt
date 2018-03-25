@@ -11,7 +11,6 @@ class ReturningStatement // TODO postadvance
 	
 	public var assignStatement : AssignStatement? = null
 	public var functionCall : FunctionCall? = null
-	public var exitStatement : ExitStatement? = null
 	
 	// One of the following is non-null
 	public var literal : String? = null
@@ -28,37 +27,31 @@ class ReturningStatement // TODO postadvance
 		
 		if (parser.isType(ID)) {
 			id = parser.curToken.data
-			if (parser.isValue("exit")) {
-				val stt = ExitStatement(parser)
+		
+			var id = parser.curToken.data
+			parser.advance() // This does postadvance only for ID
+			if (parser.isType(L_PAREN)) {
+				if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared method")
+				val stt = FunctionCall(id, parser)
 				if (!stt.parse()) return false
-				exitStatement = stt
+				functionCall = stt
 				resolvedNode = stt
 				parser.advance() // Do postadvance
+			} else if (parser.isType(EQUAL)) {
+				if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared variable")
+				val stt = AssignStatement(id, parser)
+				if (!stt.parse()) return false
+				assignStatement = stt
+				resolvedNode = stt
+				parser.advance() // Do postadvance
+			} else if (allowID) {
+				if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared variable")
+				// bueno
+				this.id = id
 			} else {
-				var id = parser.curToken.data
-				parser.advance() // This does postadvance only for ID
-				if (parser.isType(L_PAREN)) {
-					if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared method")
-					val stt = FunctionCall(id, parser)
-					if (!stt.parse()) return false
-					functionCall = stt
-					resolvedNode = stt
-					parser.advance() // Do postadvance
-				} else if (parser.isType(EQUAL)) {
-					if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared variable")
-					val stt = AssignStatement(id, parser)
-					if (!stt.parse()) return false
-					assignStatement = stt
-					resolvedNode = stt
-					parser.advance() // Do postadvance
-				} else if (allowID) {
-					if (!parser.symbolTable.containsKey(id)) parser.symbolTable.put(id, "undeclared variable")
-					// bueno
-					this.id = id
-				} else {
-					return ParseErrors.EXPECTED.throwWith("function call or assignment", parser)
-				}
+				return ParseErrors.EXPECTED.throwWith("function call or assignment", parser)
 			}
+		
 		} else if (allowLiteral) {
 			if (parser.isType(CHAR) || parser.isType(NUM)) {
 				// bueno
