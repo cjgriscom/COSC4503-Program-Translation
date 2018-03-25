@@ -1,0 +1,34 @@
+package io.chandler.cosc4503.assign3
+
+import java.io.File
+
+/*
+ Chandler Griscom
+ Program Translation
+ Assignment 3
+ Lexer/Parser Main Method
+ */
+fun main(args: Array<String>) {
+
+	if (args.size != 1) {
+		System.err.println("Expected a single argument containing the name of the input file")
+	} else {
+		var xfile = File(args[0])
+		if (xfile.exists()) {
+			var tokens = ArrayList<ParserToken>()
+			tokens.add(ParserToken(ParserToken.Type.BEGIN, "", 0, 0))
+			Lexer().lex(xfile, tokens)
+			tokens.add(ParserToken(ParserToken.Type.END, "", tokens.last().linenum + 1, 0))
+			var parser = Parser(tokens)
+			if (parser.parse()) {
+				println("Parsing Complete")
+				println("Symbols:")
+				for (s in parser.symbolTable.keys) println(s + ": " + parser.symbolTable.get(s))
+				println("Pretty print:")
+				PrettyPrintVisitor(parser.program)
+			}
+		} else {
+			System.err.println("File does not exist: " + xfile.absolutePath)
+		}
+	}
+}
